@@ -6,6 +6,9 @@
 
 DPIS 是一个基于 LSPosed/Xposed 的 Android 模块，用于按应用独立调整显示参数（虚拟宽度 + 字体大小），在不改全局系统显示设置的前提下，优化单应用观感。
 
+## 注意
+如果你的框架只能使用 Xposed API ≤ 100 ，请前往 [主仓库](https://github.com/Kwensiu/DPIS/releases) 下载 `legacy` 版本
+
 ## 核心能力
 
 - 按应用配置虚拟宽度（`dp`）
