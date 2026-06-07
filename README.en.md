@@ -3,104 +3,76 @@
 
 ![GitHub Release](https://img.shields.io/github/v/release/Kwensiu/DPIS)
 ![License](https://img.shields.io/github/license/Kwensiu/DPIS)
+[![Telegram Group](https://img.shields.io/badge/Group-DPIS_Chat-26A5E4?logo=telegram&logoColor=white)](https://t.me/dpis_chat)
 
-[中文说明](./README.md) | English
+Go to the [Main Repository](https://github.com/Kwensiu/DPIS)
 
-DPIS is an LSPosed/Xposed-based Android module for per-app display tuning (`virtual width + font size`) without changing global system display settings.
+[中文说明](../README.md) | English
 
-## Core Capabilities
+DPIS is an LSPosed/Xposed-based Android module for per-app interface scale, smallest width, and font size tuning. It is useful when you want specific apps to appear larger, smaller, or closer to a tablet-style layout without changing the global system display settings.
 
-- Configure per-app virtual width (`dp`)
-- Configure per-app font scale (`50-300%`)
-- Both width and font support `Emulation` and `Replacement` modes
-- App list search and filtering (`All apps` / `Configured apps`)
-- System-layer hook toggle and safe mode
+## Main Features
+
+- Per-app interface scale, from `30-300%`
+- Per-app smallest width, for targeting a fixed `dp` width class
+- Per-app font scale, from `50-300%`
+- App search, configured-app filtering, and a landscape / large-screen detail panel
+- Global Prefill and Quick Templates for reusing common settings
+- Standard and Legacy builds for different LSPosed/Xposed environments
 
 ## Requirements
 
-- Android 8.0+ (`minSdk 26`)
+- Android 8.0 or later
 - Rooted device
 - LSPosed/Xposed installed and enabled
 
 ## Quick Start
 
 1. Enable the DPIS module in LSPosed.
-2. Select the target app in scope. In regular cases you do not need `system`.
-3. Open DPIS and configure:
-   - Virtual width (`dp`)
-   - Font scale (`50-300%`)
-   - Width mode and font mode (`Emulation` / `Replacement`)
-4. Save, then restart the target app process. Reboot the device if needed.
+2. Select the target app in scope.
+3. Open DPIS, go to the app list, and choose the target app.
+4. Configure interface scale, smallest width, or font size.
+5. Save, then restart the target app for the configuration to take effect.
 
-If you use `Emulation`, also enable `system` scope in LSPosed. `Replacement` usually does not need it.
+Most users can keep the default strategy and only adjust interface scale or font size. Saving means DPIS has written the configuration, but the target app usually needs a process restart before it reads the new values. 
 
-## Modes
+## Configuration Tips
 
-| Mode | Characteristics | Best for | Notes |
-| --- | --- | --- | --- |
-| `Emulation` | Closer to native system behavior, usually more natural | System-like rendering consistency | Depends on system-layer hooks; some apps do not support it |
-| `Replacement` | Direct field rewrite, more immediate | Most regular apps | May cause layout drift or scaling glitches |
+- To scale the whole app UI up or down, start with `Interface scale`.
+- To make an app use a tablet-like or fixed-width layout, use `Smallest width`.
+- To change only text size, adjust `Font size`.
+- If you are unsure which strategy to choose, keep `Auto`.
+- If the default path does not work or the app displays incorrectly, try `Compat`.
+- If you use system-layer behavior, also select the `system` scope in LSPosed.
 
-## System-Layer Hook and Safe Mode
+When entering a small window, resizing it, or rotating the screen, DPIS tries to keep the app's scaling stable. Different apps handle window changes differently, so if the display looks wrong, restart the target app first.
 
-- `Off`: only uses in-process overrides for the target app. Recommended with `Replacement`.
-- `On`: enables the full `system_server` path, useful for debugging and comparison.
-- `On + Safe mode`: limits hooks to lower-risk entries (`activity-start`), recommended as the default.
+## Templates and Prefill
 
-If you use `Emulation`, make sure LSPosed scope includes `system`. `Replacement` can usually work with only the target app selected.
+- `Global Prefill` prepares draft values for apps that have not been configured yet. It does not modify existing app configurations.
+- `Quick Templates` save a full set of common values and apply them to multiple apps at once.
+- Applying a template in batch may overwrite existing target-app configurations. Check the confirmation dialog before applying.
 
-## Logs and Diagnostics
-
-- `Log output` is recommended off by default to reduce overhead.
-- When enabled, high-frequency `system_server` entries are sampled and deduplicated.
-- Font debug stats and overlay are diagnostic tools only and are not required for the normal apply path.
-
-## Build and Test
-
-```powershell
-./gradlew :app:assembleModern101Debug :app:assembleCompat100Debug
-./gradlew :app:testAllDebugUnitTests
-```
-
-Optional install commands (Windows PowerShell):
-
-```powershell
-./gradlew :app:assembleModern101Debug; if ($LASTEXITCODE -eq 0) { adb install -r "app/build/outputs/apk/modern101/debug/app-modern101-debug.apk" }
-./gradlew :app:assembleCompat100Debug; if ($LASTEXITCODE -eq 0) { adb install -r "app/build/outputs/apk/compat100/debug/app-compat100-debug.apk" }
-```
-
-## Project Structure
-
-```text
-app/                      Main Android module
-  src/main/java/          Shared production code
-  src/main/res/           Shared resources and UI
-  src/modern101/java/     libxposed API 101 specific code
-  src/compat100/java/     Legacy Xposed compatibility code
-  src/test/java/          Unit tests
-docs/                     Active documentation
-docs/archive/             Historical archived documentation
-refs/                     Local references (LSPosed / AOSP / libxposed)
-```
-
-## Version Notes
+## Version Choice
 
 | Variant | File name | Environment |
 | --- | --- | --- |
 | Standard | `DPIS_{version}.apk` | LSPosed (`libxposed API 101+`) |
 | Legacy | `DPIS_{version}_legacy.apk` | Classic Xposed / frameworks without `libxposed API 101` support |
 
-Both variants target the same user-facing feature set. The main differences are framework integration, download entry, and update behavior. Prefer the standard build and only use the legacy build when the standard one cannot load.
+Prefer the Standard build. Use the Legacy build only when the Standard build cannot load or your framework does not support it. The two variants share the same package name and cannot be installed side by side.
 
-For the legacy build, always follow the main repo Releases page. The LSPosed / Xposed module repository only syncs the standard APK.
+For the Legacy build, always follow the main repository Releases page. The LSPosed / Xposed module repository usually syncs only the Standard APK.
 
-The standard and legacy builds cannot coexist. They share the same package name, so cross-installing them overwrites the other one and may reset existing state or configuration.
+## More Documentation
 
-## Documentation
-
-- Chinese README: [../README.md](../README.md)
 - Active docs: [README.md](README.md)
+- Chinese README: [../README.md](../README.md)
+- Font routing notes: [font-routing.md](font-routing.md)
+- UI guidelines: [ui-guidelines.md](ui-guidelines.md)
 - Archived docs: [archive/README.md](archive/README.md)
+
+Developers can find project structure, build commands, test commands, and collaboration notes in [AGENTS.md](../AGENTS.md).
 
 ## License
 
