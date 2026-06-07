@@ -4,111 +4,76 @@
 ![GitHub Release](https://img.shields.io/github/v/release/Kwensiu/DPIS)
 ![License](https://img.shields.io/github/license/Kwensiu/DPIS)
 [![QQ Group](https://img.shields.io/badge/交流群-1081784676-12B7F5?logo=qq&logoColor=white)](https://qun.qq.com/universal-share/share?ac=1&authKey=IMGMoVIeXPmgs81WgvJEgurLGCeuV%2FWKh8wSxZIXIqtvAA6U%2BJLMtwzG0lrZj7CG&busi_data=eyJncm91cENvZGUiOiIxMDgxNzg0Njc2IiwidG9rZW4iOiI4RkllZjhUVnhGYlVXcEhHZDhyWHdzcDRkRDlGKzlBL0NId1lkMTN2WFJ4SStHa2Y1bmJMM1dlemY5eEFxdmg4IiwidWluIjoiMTA3MDU3NTUyMSJ9&data=8HydkH9NGrhzp1pPhpOFSYT4Qp1aeQZZDN-Y1nk8cp-RBsmsBnRwQ_vN2qXfmhqtTc_LXfOpR6Gv9UCswKRjKg&svctype=4&tempid=h5_group_info)
+[![Telegram Group](https://img.shields.io/badge/交流群-DPIS_Chat-26A5E4?logo=telegram&logoColor=white)](https://t.me/dpis_chat)
 
 [前往代码仓库](https://github.com/Kwensiu/DPIS)
 
 中文说明 | [English](docs/README.en.md)
 
-DPIS 是一个基于 LSPosed/Xposed 的 Android 模块，用于按应用独立调整显示参数（最小宽度 + 字体大小），在不改全局系统显示设置的前提下，优化单应用观感。
+DPIS 是一个基于 LSPosed/Xposed 的 Android 模块，用来按应用单独调整界面比例、最小宽度和字体大小。它适合想让某些应用更大、更小，或更接近平板布局的用户，不需要修改全局系统显示设置。
 
-## 核心能力
+## 主要功能
 
-- 按应用配置最小宽度（`dp`）
-- 按应用配置字体大小（`50-300%`）
-- 宽度与字体均支持 `系统` / `兼容` 两种模式
-- 应用列表支持搜索与筛选（全部应用 / 已配置应用）
-- 支持系统层 Hook 开关与安全模式
-- 支持在应用详情中按应用自定义字体兼容链路（含 Flutter / HyperOS native 等补充链路）
+- 按应用调整界面比例，范围 `30-300%`
+- 按应用设置最小宽度，适合固定到某个 `dp` 宽度档位
+- 按应用调整字体大小，范围 `50-300%`
+- 支持应用搜索、已配置应用筛选和横屏 / 大屏详情面板
+- 支持全局预填和快捷模板，方便重复套用常用配置
+- 支持标准版和兼容版，覆盖不同 LSPosed/Xposed 环境
 
-## 环境要求
+## 使用要求
 
-- Android 8.0+（`minSdk 26`）
-- 已 Root 设备
-- 已安装并启用 LSPosed/Xposed 环境
+- Android 8.0 或更高版本
+- 已 Root
+- 已安装并启用 LSPosed/Xposed
 
 ## 快速开始
 
 1. 在 LSPosed 中启用 DPIS 模块。
-2. 在作用域中勾选目标应用。常规场景不需要勾选 `system`。
-3. 打开 DPIS，给目标应用设置：
-   - 最小宽度（`dp`）
-   - 字体大小（`50-300%`）
-   - 宽度模式与字体模式（`系统` / `兼容`）
-4. 保存后重启目标应用进程生效；必要时重启设备。
+2. 在作用域中勾选需要调整的目标应用。
+3. 打开 DPIS，进入应用列表，选择目标应用。
+4. 设置界面比例、最小宽度或字体大小。
+5. 点击保存，然后重启目标应用让配置生效。
 
-如果你使用 `系统` 模式，请额外在 LSPosed 中勾选 `system` 作用域；`兼容` 模式通常不需要。
+一般用户可以先使用默认策略，只调整界面比例和字体大小。保存表示 DPIS 已经写入配置，但目标应用通常需要重新启动进程后才会读取新配置。
 
-## 模式说明
+## 配置建议
 
-| 模式 | 特点 | 适用场景 | 注意事项 |
-| --- | --- | --- | --- |
-| `系统` | 更接近系统原生链路，显示通常更自然 | 追求系统级一致性 | 依赖系统层 Hook；部分应用不支持 |
-| `兼容` | 通过应用进程内兼容链路直接调整缩放，生效更直接 | 大多数常规应用 | 可能出现布局错位或缩放异常 |
+- 想整体放大或缩小应用界面：优先使用「界面比例」。
+- 想让应用进入类似平板或固定宽度布局：使用「最小宽度」。
+- 只想改变文字大小：只调整「字体大小」。
+- 不确定策略怎么选：保持默认的「自动」。
+- 默认方式无效或显示异常时，再尝试「兼容」。
+- 如果使用系统层能力，请在 LSPosed 中额外勾选 `system` 作用域。
 
-> 说明：旧版本 UI 中的“伪装 / 替换”已改名为“系统 / 兼容”。
+进入小窗、改变小窗大小或横竖屏切换时，DPIS 会尽量保持应用本身的缩放表现。不同应用对窗口变化的适配程度不同，遇到显示异常时建议先重启目标应用确认。
 
-字体 `兼容` 模式默认启用 Resources、TextView 与 Paint 兜底链路，并通过调度与来源标记尽量避免重复放大。若某个应用出现缩放异常，可在目标应用详情页打开“自定义链路”，按应用关闭具体链路；修改会在目标应用进程下次启动时生效。
+## 模板与预填
 
-## 系统层 Hook 与安全模式
+- 「全局预填」会为还没有配置过的应用准备默认草稿，不会修改已有应用配置。
+- 「快捷模板」可以保存一套常用配置，并一次性应用到多个应用。
+- 批量应用模板可能覆盖目标应用已有配置，请注意确认弹窗中的提示。
 
-- `关闭`：仅使用目标应用进程内覆写。建议搭配 `兼容` 模式。
-- `开启`：启用完整 `system_server` 入口，适合调试与对照。
-- `开启 + 安全模式`：限制为低风险入口（`activity-start`），推荐作为默认配置。
-
-如果你要使用 `系统` 模式，请先确保 LSPosed 作用域已勾选 `system`。`兼容` 模式通常可以只勾选目标应用。
-
-## 日志与调试
-
-- `日志输出` 默认建议关闭（降低性能开销）。
-- 开启后，`system_server` 高频入口会按采样窗口与去重策略输出。
-- 字体调试统计与悬浮窗仅用于诊断，不影响正常生效链路。
-
-## 构建与测试
-
-```powershell
-./gradlew :app:assembleModern101Debug :app:assembleCompat100Debug
-./gradlew :app:testAllDebugUnitTests
-```
-
-可选安装（Windows PowerShell）：
-
-```powershell
-./gradlew :app:assembleModern101Debug; if ($LASTEXITCODE -eq 0) { adb install -r "app/build/outputs/apk/modern101/debug/app-modern101-debug.apk" }
-./gradlew :app:assembleCompat100Debug; if ($LASTEXITCODE -eq 0) { adb install -r "app/build/outputs/apk/compat100/debug/app-compat100-debug.apk" }
-```
-
-## 项目结构
-
-```text
-app/                      Android 主模块
-  src/main/java/          共享生产代码
-  src/main/res/           共享资源与界面
-  src/modern101/java/     libxposed API 101 专用代码
-  src/compat100/java/     legacy Xposed API 兼容代码
-  src/test/java/          单元测试
-docs/                     当前有效文档
-docs/archive/             历史归档文档
-refs/                     本地参考资料（LSPosed / AOSP / libxposed）
-```
-
-## 版本说明
+## 版本选择
 
 | 版本 | 文件名 | 适用环境 |
 | --- | --- | --- |
 | 标准版 | `DPIS_{version}.apk` | LSPosed（libxposed API 101+） |
 | 兼容版 | `DPIS_{version}_legacy.apk` | 传统 Xposed / 不支持 libxposed API 101 的框架 |
 
-两个版本面向相同的用户功能目标，区别主要在于与 Xposed 框架的对接方式、下载入口与更新行为。优先使用标准版，仅在标准版无法加载时使用兼容版。
+优先使用标准版。只有在标准版无法加载，或你的框架不支持标准版时，再使用兼容版。两个版本包名相同，不能同时安装，交叉安装会互相覆盖。
 
-兼容版（`legacy`）请始终以主仓库 Releases 为准。LSPosed / Xposed 模块仓库仅同步标准版 APK。
+兼容版请始终以主仓库 Releases 为准。LSPosed / Xposed 模块仓库通常只同步标准版 APK。
 
-标准版与兼容版不可共存。二者包名相同，交叉安装会相互覆盖，并可能导致已有配置或状态被重置。
-
-## 文档导航
+## 更多文档
 
 - 当前文档入口：[docs/README.md](docs/README.md)
-- 英文说明文档：[docs/README.en.md](docs/README.en.md)
-- 历史文档归档入口：[docs/archive/README.md](docs/archive/README.md)
+- 英文说明：[docs/README.en.md](docs/README.en.md)
+- 字体链路说明：[docs/font-routing.md](docs/font-routing.md)
+- UI 变更约定：[docs/ui-guidelines.md](docs/ui-guidelines.md)
+- 历史文档归档：[docs/archive/README.md](docs/archive/README.md)
+
+开发者可以在 [AGENTS.md](AGENTS.md) 中查看项目结构、构建测试命令和协作约定。
 
 ## 许可证
 
