@@ -8,7 +8,7 @@
 
 [前往代码仓库](https://github.com/Kwensiu/DPIS)
 
-中文说明 | [English](docs/README.en.md)
+中文说明 | [English](./README.en.md)
 
 DPIS 是一个基于 LSPosed/Xposed 的 Android 模块，用来按应用单独调整界面比例、最小宽度和字体大小。它适合想让某些应用更大、更小，或更接近平板布局的用户，不需要修改全局系统显示设置。
 
