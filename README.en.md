@@ -7,7 +7,7 @@
 
 Go to the [Main Repository](https://github.com/Kwensiu/DPIS)
 
-[中文说明](../README.md) | English
+[中文说明](./README.md) | English
 
 DPIS is an LSPosed/Xposed-based Android module for per-app interface scale, smallest width, and font size tuning. It is useful when you want specific apps to appear larger, smaller, or closer to a tablet-style layout without changing the global system display settings.
 
